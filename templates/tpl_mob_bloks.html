@@ -1,0 +1,2275 @@
+{% for blok in master.bloks %}
+
+	{% if blok.type == "search" %}
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li data-role="list-divider">Browse</li>
+			<li><a href="/network">All Networks</a></li>
+			<li><a href="/all_users">All Users</a></li>
+		</ul>
+		<form action="/search" method="post" data-ajax="false" class="ui-body ui-body-a ui-corner-all">
+		  <fieldset>
+			<div data-role="fieldcontain" class="ui-hide-label">
+				<label for="search">SEARCH:</label>
+				<input tabindex=1 class="myfonts" type="text" name="form_search_term" id="search" value="" placeholder="SEARCH TERM"/>
+			</div>
+			<button tabindex=2 type="submit" data-theme="b" name="submit" value="submit_search">SEARCH</button>
+		  </fieldset>
+		</form>
+	{% endif %}
+
+
+	{% if blok.type == "search_result" %}
+		{% if blok.has_search_result %}
+
+
+			{% if blok.search_result.type == "networkname" %}
+			<div class="text_bubble ui-body ui-body-c">
+				<p>Your search term matched a name for a metric network.  Click below to go to the network summary page.</p>
+			</div>
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Network</li>
+				<li><a href="/network?vn={{ blok.search_result.network_name }}">Go to <b>{{ blok.search_result.network_name }}</b> summary page.</a></li>
+			</ul>
+			{% endif %}
+
+
+			{% if blok.search_result.type == "username" %}
+				{% if blok.search_result.total_accounts == 0 %}
+					<div class="text_bubble ui-body ui-body-c">
+						<p>Your search term matched a name for a user.  Click below to go to that users profile page.</p>
+					</div>
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li data-role="list-divider">Profile</li>
+						<li><a href="/profile?va={{ blok.search_result.username }}">
+							<img src="{{ blok.search_result.gravatar_url }}" />
+							<p>Visit profile of <b>{{ blok.search_result.username }}</b>.</p>
+						</a></li>
+					</ul>
+				{% else %}
+					<div class="text_bubble ui-body ui-body-c">
+						<p>Your search term matched a name for a metric user/account.  Links to this user's metric account are
+						<br/>are listed below.  The first link is for the user's profile page.</p>
+					</div>
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li data-role="list-divider">Profile</li>
+						<li><a href="/profile?va={{ blok.search_result.username }}">
+							<img src="{{ blok.search_result.gravatar_url }}" />
+							<p>Visit profile of <b>{{ blok.search_result.username }}</b>.</p>
+						</a></li>
+					</ul>
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li data-role="list-divider">Accounts</li>
+						{% for account in blok.search_result.accounts %}
+						<li><a href="/network?vn={{ account.network_name }}&va={{ account.account_name }}">Network Name: {{ account.network_name }}
+						<br/>Account Name: {{ account.account_name }}
+						<br/>Account Type: {{ account.account_type }}
+						<br/>Click to view</a></li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endif %}
+
+
+			{% if blok.search_result.type == "alias" %}
+				{% if blok.search_result.total_accounts == 0 %}
+					<div class="text_bubble ui-body ui-body-c">
+						<p>Your search term matched a name for a user.  Click below to go to that users profile page.</p>
+					</div>
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li data-role="list-divider">Profile</li>
+						<li><a href="/profile?va={{ blok.search_result.username }}">
+							<img src="{{ blok.search_result.gravatar_url }}" />
+							<p>Visit profile of <b>{{ blok.search_result.username }}</b>.</p>
+						</a></li>
+					</ul>
+				{% else %}
+					<div class="text_bubble ui-body ui-body-c">
+						<p>Your search term matched a name for a metric account alias.  The user who owns that alias account
+						is shown below, along with the alias account and any other accounts the user has as well.  Click the
+						user to go to their profile or one of the accounts to visit the account summary page.</p>
+					</div>
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li data-role="list-divider">Profile</li>
+						<li><a href="/profile?va={{ blok.search_result.username }}">
+							<img src="{{ blok.search_result.gravatar_url }}" />
+							<p>Visit profile of <b>{{ blok.search_result.username }}</b>.</p>
+						</a></li>
+					</ul>
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li data-role="list-divider">Alias Account</li>
+						<li><a href="/network?vn={{ blok.search_result.alias.network_name }}&va={{ blok.search_result.alias.account_name }}">Network Name: {{ blok.search_result.alias.network_name }}
+						<br/>Account Name: {{ blok.search_result.alias.account_name }}
+						<br/>Account Type: {{ blok.search_result.alias.account_type }}
+						<br/>Click to view</a></li>
+					</ul>
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li data-role="list-divider">Accounts</li>
+						{% for account in blok.search_result.accounts %}
+						<li><a href="/network?vn={{ account.network_name }}&va={{ account.account_name }}">Network Name: {{ account.network_name }}
+						<br/>Account Name: {{ account.account_name }}
+						<br/>Account Type: {{ account.account_type }}
+						<br/>Click to view</a></li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endif %}
+
+
+			{% if blok.search_result.type == "error" %}
+				<div class="text_bubble ui-body ui-body-c">
+					<p>{{ blok.search_result.error_message }}</p>
+				</div>
+			{% endif %}
+
+		{% else %}
+			<div class="text_bubble ui-body ui-body-c">
+				<p>Enter a search term.
+				<br/>Can be a username, account name, or a network name.</p>
+			</div>
+		{% endif %}
+	{% endif %}
+
+	{% if blok.type == "messages" %}
+		{% if blok.messages %}
+			{% for message in blok.messages %}
+				<div class="myclass2 ui-body ui-body-c">
+					<div style="margin:0px;padding:0px;float: left; width: 18%;padding: 1px;">
+						<img class="qr_code" src="{{ message.avatar_url }}"/>
+					</div>
+					<div style="margin:0px;padding:0px;float: left; width: 70%;">
+						<p style="margin:5px;padding:0px;" ><b>{{ message.username }}</b><br/>
+						<b>{{ message.date }}</b><br/>
+						{{ message.text }}</p>
+					</div>
+				</div>
+			{% endfor %}
+			{% if blok.next_more %}
+				{% if blok.prev_more %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/messages?channel={{ blok.channel }}&rcursor={{ blok.prev_cursor }}">Previous Messages...</a>
+						</li>
+						<li>
+							<a href="/messages?channel={{ blok.channel }}&fcursor={{ blok.next_cursor }}">Next Messages...</a>
+						</li>
+					</ul>
+				{% else %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/messages?channel={{ blok.channel }}&fcursor={{ blok.next_cursor }}">Next Messages...</a>
+						</li>
+					</ul>
+				{% endif %}
+			{% else %}
+				{% if blok.prev_more %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/messages?channel={{ blok.channel }}&rcursor={{ blok.prev_cursor }}">Previous Messages...</a>
+						</li>
+					</ul>
+				{% endif %}
+			{% endif %}
+		{% else %}
+			<div class="text_bubble ui-body ui-body-c">
+				<p>No messages for this user.</p>
+			</div>
+		{% endif %}
+	{% endif %}
+
+
+	{% if blok.type == "all users" %}
+		{% if blok.users %}
+			{% for fuser in blok.users %}
+				<div class="myclass2 ui-body ui-body-c">
+					<div style="margin:0px;padding:0px;float: left; width: 18%;padding: 1px;">
+						<img class="qr_code" src="{{ fuser.avatar_url }}"/>
+					</div>
+					<div style="margin:0px;padding:0px;float: left; width: 70%;">
+						<p style="margin:5px;padding:0px;" ><b><a href="/profile?va={{ fuser.username }}">{{ fuser.username }}</b></a><br/>
+						<b>Created Date</b>: {{ fuser.d_created_date }}<br/>
+						{{ fuser.bio }}</p>
+					</div>
+				</div>
+			{% endfor %}
+			{% if blok.next_more %}
+				{% if blok.prev_more %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/all_users?rcursor={{ blok.prev_cursor }}">Previous Messages...</a>
+						</li>
+						<li>
+							<a href="/all_users?fcursor={{ blok.next_cursor }}">Next Messages...</a>
+						</li>
+					</ul>
+				{% else %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/all_users?fcursor={{ blok.next_cursor }}">Next Messages...</a>
+						</li>
+					</ul>
+				{% endif %}
+			{% else %}
+				{% if blok.prev_more %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/all_users?rcursor={{ blok.prev_cursor }}">Previous Messages...</a>
+						</li>
+					</ul>
+				{% endif %}
+			{% endif %}
+		{% else %}
+			<div class="text_bubble ui-body ui-body-c">
+				<p>No users.</p>
+			</div>
+		{% endif %}
+	{% endif %}
+
+
+	{% if blok.type == "my_profile" %}
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li>
+				<img src="{{ blok.gravatar_url }}" />
+				<h3>{{ blok.username }}</h3>
+			</li>
+			<li>
+				<a href="/messages?channel={{ blok.username }}"><h3>Show public messages</h3></a>
+			</li>
+		</ul>
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li>
+				<a href="/search?term={{ blok.username }}">My metric accounts</a>
+			</li>
+		</ul>
+		{% if blok.has_client_offer %}
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li data-role="list-divider">Client Account Offer</li>
+			<li><a href="/network?vn={{ blok.client_parent_entity.network_name }}&va={{ blok.client_parent_entity.username_alias }}">
+			<h3>{{ blok.client_parent_entity.username_alias }}</h3>
+			<p><b>Network Name</b>: {{ blok.client_parent_entity.network_name }}</p>
+			<p><b>Network Balance</b>: {{ blok.client_parent_entity.network_balance }}</p>
+			<p><b>Reserve Balance</b>: {{ blok.client_parent_entity.reserve_balance }}</p>
+			</a></li>
+		</ul>
+		{% endif %}
+		{% if blok.has_joint_offer %}
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li data-role="list-divider">Client Account Offer</li>
+			<li><a href="/network?vn={{ blok.joint_parent_entity.network_name }}&va={{ blok.joint_parent_entity.username_alias }}">
+			<h3>{{ blok.joint_parent_entity.username_alias }}</h3>
+			<p><b>Network Name</b>: {{ blok.joint_parent_entity.network_name }}</p>
+			<p><b>Network Balance</b>: {{ blok.joint_parent_entity.network_balance }}</p>
+			<p><b>Reserve Balance</b>: {{ blok.joint_parent_entity.reserve_balance }}</p>
+			</a></li>
+		</ul>
+		{% endif %}
+		<div class="text_bubble ui-body ui-body-c">
+		<h3>Bio:</h3>
+		<p>{{ blok.bio }}</p>
+		</div>
+	{% endif %}
+
+
+	{% if blok.type == "other_profile" %}
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li>
+				<img src="{{ blok.gravatar_url }}" />
+				<h3>{{ blok.username }}</h3>
+			</li>
+			<li>
+				<a href="/messages?channel={{ blok.username }}">Send public message</a>
+			</li>
+		</ul>
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li>
+				<a href="/search?term={{ blok.username }}">Metric accounts for {{ blok.username }}</a>
+			</li>
+		</ul>
+		<div class="text_bubble ui-body ui-body-c">
+		<h3>Bio:</h3>
+		<p>{{ blok.bio }}</p>
+		</div>
+	{% endif %}
+
+	{% if blok.type == "map multiple" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>{{ blok.heading }}</h3>
+			<div id="map"></div>
+			<script>
+			  function initMap() {
+				var mylocation = {lat: {{ blok.my_lat }}, lng: {{ blok.my_long }}};
+				var map = new google.maps.Map(document.getElementById('map'), {
+				  zoom: 4,
+				  center: mylocation
+				});
+				{% for marker in blok.markers %}
+				var marker = new google.maps.Marker({
+				  position: {lat: {{ marker.lat }}, lng: {{ marker.long }}},
+				  title: '{{ marker.username }}',
+				  map: map
+				});
+				{% endfor %}
+			  }
+			</script>
+			<script async defer
+			src="https://maps.googleapis.com/maps/api/js?key={{ master.SETTINGS.data.google_maps_api_key }}&callback=initMap">
+			</script>
+		</div>
+	{% endif %}
+
+	{% if blok.type == "map" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>Location: {{ blok.lat }}, {{ blok.long }}</h3>
+			<div id="map"></div>
+			<script>
+			  function initMap() {
+				var mylocation = {lat: {{ blok.lat }}, lng: {{ blok.long }}};
+				var map = new google.maps.Map(document.getElementById('map'), {
+				  zoom: 4,
+				  center: mylocation
+				});
+				var marker = new google.maps.Marker({
+				  position: mylocation,
+				  map: map
+				});
+			  }
+			</script>
+			<script async defer
+			src="https://maps.googleapis.com/maps/api/js?key={{ master.SETTINGS.data.google_maps_api_key }}&callback=initMap">
+			</script>
+		</div>
+	{% endif %}
+
+	{% if blok.type == "menu" %}
+		<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+			<li data-role="list-divider">Some Links</li>
+		{% for link in blok.menuitems %}
+			<li><a href="{{ link.href }}">{{ link.label }}</a></li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+
+	{% if blok.type == "home" %}
+		{% if master.user.IS_LOGGED_IN %}
+			<div class="text_bubble ui-body ui-body-c">
+			<p>Hello, <b>{{ master.page.username }}</b>.</p>
+			<p>You are currently signed in to the application and on the root page.</p>
+			<p>DISCLAIMER:  Metric Reserve is banking software currently still in prototype and development stage.  It is not
+			production ready and should not be advertised as such.  You can sign in, test drive it, connect with friends
+			and see how everything works, but any real world financial or contractual relations with other people should not be
+			based on what the metric reserve application is doing or implying or suggesting.</p>
+			<p>The code is open source if you want to run it yourself to help understand it better:
+			<br/><a href="https://github.com/wizardwatson/metricreserve">https://github.com/wizardwatson/metricreserve</a>
+			<br/><br/>- David Watson 4/21/2017</p>
+			</div>
+		{% else %}
+			<div class="text_bubble ui-body ui-body-c">
+			<p>Hello, <b>{{ master.page.username }}</b>.</p>
+			<p>If you're new here it is recommended you read the documentation.</p>
+			<p>Actually, even if you aren't new here, might not be a bad idea to read it again.  Something probably changed.</p>
+			<p>DISCLAIMER:  Metric Reserve is banking software currently still in prototype and development stage.  It is not
+			production ready and should not be advertised as such.  You can sign in, test drive it, connect with friends
+			and see how everything works, but any real world financial or contractual relations with other people should not be
+			based on what the metric reserve application is doing or implying or suggesting.</p>
+			<p>The code is open source if you want to run it yourself to help understand it better:
+			<br/><a href="https://github.com/wizardwatson/metricreserve">https://github.com/wizardwatson/metricreserve</a>
+			<br/><br/>- David Watson 4/21/2017</p>
+			</div>
+		{% endif %}
+	{% endif %}
+
+
+	{% if blok.type == "all networks" %}
+		{% if blok.groups %}
+			{% if blok.groups.has_my_live_networks %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">My Live Networks</li>
+					{% for network in blok.groups.my_live_networks %}
+					<li><a href="/network?vn={{ network.network_name }}">{{ network.network_name }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_my_test_networks %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">My Test Networks</li>
+					{% for network in blok.groups.my_test_networks %}
+					<li><a href="/network?vn={{ network.network_name }}">{{ network.network_name }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_live_networks %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Available Live Networks</li>
+					{% for network in blok.groups.live_networks %}
+					<li><a href="/network?vn={{ network.network_name }}">{{ network.network_name }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_one_of_test_inactive_deleted %}
+			<div data-role="collapsible-set" data-theme="b" data-content-theme="d">
+				{% if blok.groups.has_test_networks %}
+					<div data-role="collapsible">
+						<h2>Test Networks</h2>
+						<ul class="myclass" data-role="listview" data-divider-theme="a">
+							{% for network in blok.groups.test_networks %}
+							<li><a href="/network?vn={{ network.network_name }}">{{ network.network_name }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+				{% if blok.groups.has_inactive_networks %}
+					<div data-role="collapsible">
+						<h2>Inactive Networks</h2>
+						<ul class="myclass" data-role="listview" data-divider-theme="a">
+							{% for network in blok.groups.inactive_networks %}
+							<li><a href="/network?vn={{ network.network_name }}">{{ network.network_name }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+				{% if blok.groups.has_deleted_networks %}
+					<div data-role="collapsible">
+						<h2>Deleted Networks</h2>
+						<ul class="myclass" data-role="listview" data-divider-theme="a">
+							{% for network in blok.groups.deleted_networks %}
+							<li><a href="/network?vn={{ network.network_name }}">{{ network.network_name }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			</div>
+			{% endif %}
+		{% else %}
+			<div class="text_bubble ui-body ui-body-c">
+			<p>Currently no metric reserve networks exist.</p>
+			</div>
+		{% endif %}
+	{% endif %}
+
+
+	{% if blok.type == "one network" %}
+			<div class="text_bubble ui-body ui-body-c">
+			<p><b>NETWORK</b>: {{ blok.network.network_name }}<br/>
+			<b>NETWORK ID</b>:  {{ blok.network.network_id }}<br/>
+			<b>STATUS</b>:  {{ blok.network.network_status }}<br/>
+			<b>TYPE</b>:  {{ blok.network.network_type }}<br/>
+			<b>SKINTILLIONTHS</b>:  {{ blok.network.skintillionths }}<br/>
+			<b>DECIMAL PLACES</b>:  {{ blok.network.decimal_places }}<br/>
+			<b>DESCRIPTION</b>:  {{ blok.network.description }}<br/>
+			<b>DATE CREATED</b>:  {{ blok.network.date_created }}</p>
+			</div>
+	{% endif %}
+	{% if blok.type == "all accounts" %}
+		{% if blok.groups %}
+			{% if blok.groups.has_parent_client_offer %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Client Account Offer from:</li>
+					<li><a href="/network?va={{ blok.groups.parent_client_offer.username }}&vn={{ blok.groups.parent_client_offer.network_name }}">{{ blok.groups.parent_client_offer.username }}</a></li>
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_parent_joint_offer %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Joint Account Offer from:</li>
+					<li><a href="/network?va={{ blok.groups.parent_joint_offer.username }}&vn={{ blok.groups.parent_joint_offer.network_name }}">{{ blok.groups.parent_joint_offer.username }}</a></li>
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_reserve_account %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Reserve Account</li>
+					<li><a href="/network?va={{ blok.groups.reserve_account.extra_pickle.account }}&vn={{ blok.groups.reserve_account.extra_pickle.network }}">{{ blok.groups.reserve_account.extra_pickle.account }}</a></li>
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_client_accounts %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Client Accounts</li>
+					{% for account in blok.groups.client_accounts %}
+					<li><a href="/network?va={{ account.extra_pickle.account }}&vn={{ account.extra_pickle.network }}">{{ account.extra_pickle.account }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_joint_accounts %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Joint Accounts</li>
+					{% for account in blok.groups.joint_accounts %}
+					<li><a href="/network?va={{ account.extra_pickle.account }}&vn={{ account.extra_pickle.network }}">{{ account.extra_pickle.account }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_clone_accounts %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Clone Accounts</li>
+					{% for account in blok.groups.clone_accounts %}
+					<li><a href="/network?va={{ account.extra_pickle.account }}&vn={{ account.extra_pickle.network }}">{{ account.extra_pickle.account }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_child_client_accounts %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Sponsored Client Accounts</li>
+					{% for account in blok.groups.child_client_accounts %}
+					<li><a href="/network?va={{ account.extra_pickle.account }}&vn={{ account.extra_pickle.network }}">{{ account.extra_pickle.account }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+			{% if blok.groups.has_child_joint_accounts %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Sponsored Joint Accounts</li>
+					{% for account in blok.groups.child_joint_accounts %}
+					<li><a href="/network?va={{ account.extra_pickle.account }}&vn={{ account.extra_pickle.network }}">{{ account.extra_pickle.account }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% else %}
+			<div class="text_bubble ui-body ui-body-c">
+			<p>You currently have no accounts on this network.</p>
+			</div>
+		{% endif %}
+	{% endif %}
+
+	{% if blok.type == "graph" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<p>
+			<b>Network Name</b>:  {{ blok.graph.network_name }}<br/>
+			<b>Key Name</b>:  {{ blok.graph.key_name }}</p>
+			<p><a href="/network?vn={{ blok.graph.network_name }}&va={{ blok.graph.account_name }}">Back to Account</a></p>
+			<p>
+			<b>TOTAL_TREES</b>:  {{ blok.graph.TOTAL_TREES }}<br/>
+			<b>RESERVE_AMT_TOTAL</b>:  {{ blok.graph.RESERVE_AMT_TOTAL }}<br/>
+			<b>NETWORK_AMT_TOTAL</b>:  {{ blok.graph.NETWORK_AMT_TOTAL }}<br/>
+			<b>SUGGESTED_AMT_TOTAL</b>:  {{ blok.graph.SUGGESTED_AMT_TOTAL }}<br/>
+			<br/>
+			<b>SUGGESTED_COUNT_TOTAL</b>:  {{ blok.graph.SUGGESTED_COUNT_TOTAL }}<br/>
+			<b>SUGGESTED_MEMBER_TOTAL</b>:  {{ blok.graph.SUGGESTED_MEMBER_TOTAL }}<br/>
+			<b>SUGGESTED_AMT_TOTAL</b>:  {{ blok.graph.SUGGESTED_AMT_TOTAL }}<br/></p>
+		</div>
+		<div data-role="collapsible">
+			<h2>Suggested TX Counts</h2>
+			<ul class="myclass" data-role="listview" data-divider-theme="a">
+				<li><b>STX_COUNT_01</b>:  {{ blok.graph.STX_COUNT_01 }}</li>
+				<li><b>STX_COUNT_02</b>:  {{ blok.graph.STX_COUNT_02 }}</li>
+				<li><b>STX_COUNT_03</b>:  {{ blok.graph.STX_COUNT_03 }}</li>
+				<li><b>STX_COUNT_04</b>:  {{ blok.graph.STX_COUNT_04 }}</li>
+				<li><b>STX_COUNT_05</b>:  {{ blok.graph.STX_COUNT_05 }}</li>
+				<li><b>STX_COUNT_06</b>:  {{ blok.graph.STX_COUNT_06 }}</li>
+				<li><b>STX_COUNT_07</b>:  {{ blok.graph.STX_COUNT_07 }}</li>
+				<li><b>STX_COUNT_08</b>:  {{ blok.graph.STX_COUNT_08 }}</li>
+				<li><b>STX_COUNT_09</b>:  {{ blok.graph.STX_COUNT_09 }}</li>
+				<li><b>STX_COUNT_10</b>:  {{ blok.graph.STX_COUNT_10 }}</li>
+				<li><b>STX_COUNT_11</b>:  {{ blok.graph.STX_COUNT_11 }}</li>
+				<li><b>STX_COUNT_12</b>:  {{ blok.graph.STX_COUNT_12 }}</li>
+				<li><b>STX_COUNT_13</b>:  {{ blok.graph.STX_COUNT_13 }}</li>
+				<li><b>STX_COUNT_14</b>:  {{ blok.graph.STX_COUNT_14 }}</li>
+				<li><b>STX_COUNT_15</b>:  {{ blok.graph.STX_COUNT_15 }}</li>
+				<li><b>STX_COUNT_16</b>:  {{ blok.graph.STX_COUNT_16 }}</li>
+				<li><b>STX_COUNT_17</b>:  {{ blok.graph.STX_COUNT_17 }}</li>
+				<li><b>STX_COUNT_18</b>:  {{ blok.graph.STX_COUNT_18 }}</li>
+				<li><b>STX_COUNT_19</b>:  {{ blok.graph.STX_COUNT_19 }}</li>
+				<li><b>STX_COUNT_20</b>:  {{ blok.graph.STX_COUNT_20 }}</li>
+			</ul>
+		</div>
+		<div class="text_bubble ui-body ui-body-c">
+			<p>
+			<b>ORPHAN_RESERVE_AMT_TOTAL</b>:  {{ blok.graph.ORPHAN_RESERVE_AMT_TOTAL }}<br/>
+			<b>ORPHAN_NETWORK_AMT_TOTAL</b>:  {{ blok.graph.ORPHAN_NETWORK_AMT_TOTAL }}<br/>
+			<b>ORPHAN_MEMBER_TOTAL</b>:  {{ blok.graph.ORPHAN_MEMBER_TOTAL }}<br/>
+			<br/>
+			<b>TIME_BEGIN</b>:  {{ blok.graph.TIME_BEGIN }}<br/>
+			<b>TIME_END</b>:  {{ blok.graph.TIME_END }}<br/>
+			<b>TIME_TOTAL</b>:  {{ blok.graph.TIME_TOTAL }}<br/>
+			</p>
+		</div>
+		<div class="text_bubble ui-body ui-body-c">
+			<p>
+			<b>INDIVIDUAL TREE DATA</b>
+			</p>
+		</div>
+		{% for tree in blok.graph.TREES %}
+		<div class="text_bubble ui-body ui-body-c">
+			<p><b>TREE NUMBER</b>:  {{ tree.TREE_NUMBER }}</p>
+			<p>
+			<b>TREE_RESERVE_AMT_TOTAL</b>:  {{ tree.TREE_RESERVE_AMT_TOTAL }}<br/>
+			<b>TREE_RESERVE_AMT_AVERAGE</b>:  {{ tree.TREE_RESERVE_AMT_AVERAGE }}<br/>
+			<b>TREE_NETWORK_AMT_TOTAL</b>:  {{ tree.TREE_NETWORK_AMT_TOTAL }}<br/>
+			<b>TREE_MEMBER_TOTAL</b>:  {{ tree.TREE_MEMBER_TOTAL }}
+			{% if tree.HAS_SUGGESTED %}
+			<br/><br/><b>SUGGESTED_TREE_COUNT_TOTAL</b>:  {{ tree.SUGGESTED_TREE_COUNT_TOTAL }}<br/>
+			<b>SUGGESTED_TREE_MEMBER_TOTAL</b>:  {{ tree.SUGGESTED_TREE_MEMBER_TOTAL }}<br/>
+			<b>SUGGESTED_TREE_AMT_TOTAL</b>:  {{ tree.SUGGESTED_TREE_AMT_TOTAL }}<br/>
+			{% endif %}
+			</p>
+		</div>
+		{% if tree.HAS_SUGGESTED %}
+		<div data-role="collapsible">
+			<h2>TREE: {{ tree.TREE_NUMBER }} STX Counts</h2>
+			<ul class="myclass" data-role="listview" data-divider-theme="a">
+				<li><b>STX_COUNT_01</b>:  {{ tree.STX_COUNT_01 }}</li>
+				<li><b>STX_COUNT_02</b>:  {{ tree.STX_COUNT_02 }}</li>
+				<li><b>STX_COUNT_03</b>:  {{ tree.STX_COUNT_03 }}</li>
+				<li><b>STX_COUNT_04</b>:  {{ tree.STX_COUNT_04 }}</li>
+				<li><b>STX_COUNT_05</b>:  {{ tree.STX_COUNT_05 }}</li>
+				<li><b>STX_COUNT_06</b>:  {{ tree.STX_COUNT_06 }}</li>
+				<li><b>STX_COUNT_07</b>:  {{ tree.STX_COUNT_07 }}</li>
+				<li><b>STX_COUNT_08</b>:  {{ tree.STX_COUNT_08 }}</li>
+				<li><b>STX_COUNT_09</b>:  {{ tree.STX_COUNT_09 }}</li>
+				<li><b>STX_COUNT_10</b>:  {{ tree.STX_COUNT_10 }}</li>
+				<li><b>STX_COUNT_11</b>:  {{ tree.STX_COUNT_11 }}</li>
+				<li><b>STX_COUNT_12</b>:  {{ tree.STX_COUNT_12 }}</li>
+				<li><b>STX_COUNT_13</b>:  {{ tree.STX_COUNT_13 }}</li>
+				<li><b>STX_COUNT_14</b>:  {{ tree.STX_COUNT_14 }}</li>
+				<li><b>STX_COUNT_15</b>:  {{ tree.STX_COUNT_15 }}</li>
+				<li><b>STX_COUNT_16</b>:  {{ tree.STX_COUNT_16 }}</li>
+				<li><b>STX_COUNT_17</b>:  {{ tree.STX_COUNT_17 }}</li>
+				<li><b>STX_COUNT_18</b>:  {{ tree.STX_COUNT_18 }}</li>
+				<li><b>STX_COUNT_19</b>:  {{ tree.STX_COUNT_19 }}</li>
+				<li><b>STX_COUNT_20</b>:  {{ tree.STX_COUNT_20 }}</li>
+			</ul>
+		</div>
+		{% endif %}
+		{% endfor %}
+	{% endif %}
+
+
+	{% if blok.type == "one ticket" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<p><b>Network Name</b>:  <a href="/network?vn={{ blok.ticket.network_name }}">{{ blok.ticket.network_name }}</a><br/>
+			<b>Ticket Owner Name:</b>:  {{ blok.ticket.account_name }}</p>
+			<p><a href="/network?vn={{ blok.ticket.network_name }}&va={{ blok.ticket.account_name }}">Back to Account</a></p>
+			<p><a href="/tickets?vn={{ blok.ticket.network_name }}&va={{ blok.ticket.account_name }}">Back to All Tickets</a></p>
+		</div>
+		<div class="text_bubble ui-body ui-body-c">
+			{% if blok.ticket.is_owner %}
+				{% if blok.ticket.ticket_has_tag %}
+					<p>Tagged Account:  <a href="/network?vn={{ blok.ticket.network_name }}&va={{ blok.ticket.ticket_tag_user_account_name }}">{{ blok.ticket.ticket_tag_user_account_name }}</a></p>
+				{% else %}
+					<p>Ticket is not tagged to an account.</p>
+				{% endif %}
+			{% else %}
+				{% if blok.ticket.visitor_is_tagged %}
+					<p>Ticket is Tagged to your Account</p>
+				{% endif %}
+			{% endif %}
+			<p>
+			<b>Ticket Name</b>:  {{ blok.ticket.ticket_label }}<br/>
+			<b>Ticket Amount</b>:  {{ blok.ticket.ticket_amount }}<br/>
+			<b>Ticket Memo</b>:  {{ blok.ticket.ticket_memo }}<br/>
+			</p>
+		</div>
+		<div class="text_bubble ui-body ui-body-c">
+			<p align=center>QR Code that links<br/>
+			to this page:<br/>
+			<img src="{{ blok.ticket.ticket_qr_code_url }}"/></p>
+		</div>
+	{% endif %}
+
+
+	{% if blok.type == "all tickets" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<p><b>Network Name</b>:  <a href="/network?vn={{ blok.tickets.network_name }}">{{ blok.tickets.network_name }}</a><br/>
+			<b>Tickets Owner Name</b>:  {{ blok.tickets.account_name }}<br/></p>
+			<p><a href="/network?vn={{ blok.tickets.network_name }}&va={{ blok.tickets.account_name }}">Back to Account</a></p>
+		</div>
+		{% if blok.tickets.is_owner %}
+			{% if blok.tickets.has_owner_tags %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Tags (by others)</li>
+					{% for ticket in blok.tickets.owner_tags %}
+					<li><a href="/tickets?vn={{ blok.tickets.network_name }}&va={{ ticket.ticket_tag_user_account_name }}&vt={{ ticket.ticket_label }}">
+					<p><strong>Ticket Name: {{ ticket.ticket_label }}</strong></p>
+					<p><b>Ticket Amount</b>: {{ ticket.ticket_amount }}</p>
+					<p><b>Ticket Memo</b>: {{ ticket.ticket_memo }}</p>
+					<p><b>Owner Account Name</b>: {{ ticket.ticket_tag_user_account_name }}</p>
+					</a></li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				<div class="text_bubble ui-body ui-body-c">
+					<p>You currently have no tickets tagged to this account.</p>
+				</div>
+			{% endif %}
+			{% if blok.tickets.has_tickets %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">All Tickets</li>
+					{% for ticket in blok.tickets.all_tickets %}
+					<li><a href="/tickets?vn={{ blok.tickets.network_name }}&va={{ blok.tickets.account_name }}&vt={{ ticket.ticket_label }}">
+					<p><strong>Ticket Name: {{ ticket.ticket_label }}</strong></p>
+					<p><b>Ticket Amount</b>: {{ ticket.ticket_amount }}</p>
+					<p><b>Ticket Memo</b>: {{ ticket.ticket_memo }}</p>
+					{% if ticket.ticket_is_tagged %}
+					<p><b>Tagged Account Name</b>: {{ ticket.ticket_tag_user_account_name }}</p>
+					{% endif %}
+					</a></li>
+					{% endfor %}
+				</ul>
+				{% if blok.tickets.next_page == "0" %}
+					{% if blok.tickets.prev_page == "0" %}
+
+					{% else %}
+						<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+							<li>
+								<a href="/tickets?vn={{ blok.tickets.network_name }}&va={{ blok.tickets.account_name }}&tp={{ blok.tickets.prev_page }}">Previous Page</a>
+							</li>
+						</ul>
+					{% endif %}
+				{% else %}
+					{% if blok.tickets.prev_page == "0" %}
+
+						<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+							<li>
+								<a href="/tickets?vn={{ blok.tickets.network_name }}&va={{ blok.tickets.account_name }}&tp={{ blok.tickets.next_page }}">Next Page</a>
+							</li>
+						</ul>
+					{% else %}
+						<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+							<li>
+								<a href="/tickets?vn={{ blok.tickets.network_name }}&va={{ blok.tickets.account_name }}&tp={{ blok.tickets.prev_page }}">Previous Page</a>
+							</li>
+							<li>
+								<a href="/tickets?vn={{ blok.tickets.network_name }}&va={{ blok.tickets.account_name }}&tp={{ blok.tickets.next_page }}">Next Page</a>
+							</li>
+						</ul>
+					{% endif %}
+				{% endif %}
+			{% else %}
+				<div class="text_bubble ui-body ui-body-c">
+					<p>You have created no tickets</p>
+				</div>
+			{% endif %}
+		{% else %}
+			{% if blok.tickets.has_visitor_tags %}
+				<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+					<li data-role="list-divider">Your Tags (by this account)</li>
+					{% for ticket in blok.tickets.visitor_tags %}
+					<li><a href="/tickets?vn={{ blok.tickets.network_name }}&va={{ blok.tickets.account_name }}&vt={{ ticket.ticket_label }}">
+					<p><strong>Ticket Name: {{ ticket.ticket_label }}</strong></p>
+					<p><b>Ticket Amount</b>: {{ ticket.ticket_amount }}</p>
+					<p><b>Ticket Memo</b>: {{ ticket.ticket_memo }}</p>
+					</a></li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				<div class="text_bubble ui-body ui-body-c">
+					<p>You currently have no tickets tagged from this account.</p>
+				</div>
+			{% endif %}
+		{% endif %}
+	{% endif %}
+
+
+
+	{% if blok.type == "ledger" %}
+			<div class="text_bubble ui-body ui-body-c">
+			<p><b>Network Name</b>:  <a href="/network?vn={{ blok.ledger.network_name }}">{{ blok.ledger.network_name }}</a><br/>
+			<b>Username/Alias</b>:  {{ blok.ledger.username_alias }}<br/>
+			<b>Total Transactions</b>:  {{ blok.ledger.total_transactions }}<br/>
+			<b>Account Status</b>:  {{ blok.ledger.status }}<br/>
+			<b>Account Type</b>:  {{ blok.ledger.type }}<br/>
+			<b>Network Balance</b>:  {{ blok.ledger.network_balance }}<br/>
+			{% if blok.ledger.type == "RESERVE" %}
+			<b>Reserve Balance</b>:  {{ blok.ledger.reserve_balance }}<br/>
+			{% endif %}
+			<b>Date Created</b>:  {{ blok.ledger.d_date_created }}<br/><br/>
+			<a href="/network?vn={{ blok.ledger.network_name }}&va={{ blok.ledger.username_alias }}">Back to account</a></p>
+			</div>
+			<table class="ledger" border=1>
+				<thead>
+				<tr>
+					{% if blok.ledger.type == "RESERVE" %}
+					<th><b>Res</b></th>
+					<th><b>R.Bal</b></th>
+					{% endif %}
+					<th><b>Net</b></th>
+					<th><b>N.Bal</b></th>
+				</tr>
+				</thead>
+				{% for ftx in blok.ledger.transactions %}
+				<tr>
+					<td class="ledger ledger_{{ ftx.even_odd }}" colspan=4><b>ID:{{ ftx.d_id }} {{ ftx.d_date }} {{ ftx.d_memo }}</b></td>
+				</tr>
+				<tr>
+					{% if blok.ledger.type == "RESERVE" %}
+					<td class="ledger ledger_{{ ftx.even_odd }}" align="right"><b>{{ ftx.d_res }}</b></td>
+					<td class="ledger ledger_{{ ftx.even_odd }}" align="right"><b>{{ ftx.d_r_bal }}</b></td>
+					{% endif %}
+					<td class="ledger ledger_{{ ftx.even_odd }}" align="right"><b>{{ ftx.d_net }}</b></td>
+					<td class="ledger ledger_{{ ftx.even_odd }}" align="right"><b>{{ ftx.d_n_bal }}</b></td>
+				</tr>
+				{% endfor %}
+			</table>
+			{% if blok.ledger.next_page == "0" %}
+				{% if blok.ledger.prev_page == "0" %}
+
+				{% else %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/ledger?vn={{ blok.ledger.network_name }}&va={{ blok.ledger.username_alias }}&lp={{ blok.ledger.prev_page }}">Previous Page</a>
+						</li>
+					</ul>
+				{% endif %}
+			{% else %}
+				{% if blok.ledger.prev_page == "0" %}
+
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/ledger?vn={{ blok.ledger.network_name }}&va={{ blok.ledger.username_alias }}&lp={{ blok.ledger.next_page }}">Next Page</a>
+						</li>
+					</ul>
+				{% else %}
+					<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+						<li>
+							<a href="/ledger?vn={{ blok.ledger.network_name }}&va={{ blok.ledger.username_alias }}&lp={{ blok.ledger.prev_page }}">Previous Page</a>
+						</li>
+						<li>
+							<a href="/ledger?vn={{ blok.ledger.network_name }}&va={{ blok.ledger.username_alias }}&lp={{ blok.ledger.next_page }}">Next Page</a>
+						</li>
+					</ul>
+				{% endif %}
+			{% endif %}
+	{% endif %}
+
+	{% if blok.type == "one account" %}
+			<div class="text_bubble ui-body ui-body-c">
+			{% if blok.account.is_my_account %}
+				{% if blok.account.is_my_default %}
+				<p><b>NETWORK DEFAULT</b></p>
+				{% else %}
+				<p><b>NOT DEFAULTED</b></p>
+				{% endif %}
+			{% else %}
+				<p><b>NOT YOUR ACCOUNT</b></p>
+			{% endif %}
+
+			<p><b>Network Name</b>:  <a href="/network?vn={{ blok.account.network_name }}">{{ blok.account.network_name }}</a><br/>
+			<b>Username/Alias</b>:  {{ blok.account.username_alias }}<br/>
+			<b>Total Transactions</b>:  {{ blok.account.tx_index }}<br/>
+			<b>Account Status</b>:  {{ blok.account.status }}<br/>
+			<b>Account Type</b>:  {{ blok.account.type }}<br/>
+			<b>Network Balance</b>:  {{ blok.account.network_balance }}<br/>
+			{% if blok.account.type == "RESERVE" %}
+			<b>Reserve Balance</b>:  {{ blok.account.reserve_balance }}<br/>
+			{% endif %}
+			<b>Date Created</b>:  {{ blok.account.d_date_created }}
+			{% if blok.account.is_my_account %}
+				<br/><br/><a href="/ledger?vn={{ blok.account.network_name }}&va={{ blok.account.username_alias }}">View Ledger</a>
+			{% endif %}
+			{% if blok.account.is_my_account %}
+				{% if blok.account.ticket_count > 0 %}
+					{% if blok.account.ticket_tag_count > 0 %}
+					<br/><br/><a href="/tickets?vn={{ blok.account.network_name }}&va={{ blok.account.username_alias }}">View Tickets:{{ blok.account.ticket_count }}  (Tags:{{ blok.account.ticket_tag_count }})</a>
+					{% else %}
+					<br/><br/><a href="/tickets?vn={{ blok.account.network_name }}&va={{ blok.account.username_alias }}">View Tickets:{{ blok.account.ticket_count }}</a>
+					{% endif %}
+				{% else %}
+				<br/><br/><a href="/tickets?vn={{ blok.account.network_name }}&va={{ blok.account.username_alias }}">View Tickets</a>
+				{% endif %}
+			{% else %}
+				<br/><br/><a href="/tickets?vn={{ blok.account.network_name }}&va={{ blok.account.username_alias }}">View Tickets</a>
+			{% endif %}
+			{% if blok.account.has_graph_assignment %}
+				<br/><br/><b>Tree Number</b>:  {{ blok.account.tree_number }}<br/><a href="/graph?vn={{ blok.account.network_name }}&va={{ blok.account.username_alias }}&vk={{ blok.account.graph_sync }}">View Graph</a>
+			{% endif %}</p>
+			</div>
+			{% if blok.account.has_child_client_offer %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Child Client Account Offer</li>
+				<li><a href="/profile?va={{ blok.account.client_child_entity.username }}">
+				<h3>{{ blok.account.client_child_entity.username }}</h3>
+				<p><b>Username</b>: {{ blok.account.client_child_entity.username }}</p>
+				</a></li>
+			</ul>
+			{% endif %}
+			{% if blok.account.has_child_joint_offer %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Child Joint Account Offer</li>
+				<li><a href="/profile?va={{ blok.account.joint_child_entity.username }}">
+				<h3>{{ blok.account.joint_child_entity.username }}</h3>
+				<p><b>Username</b>: {{ blok.account.joint_child_entity.username }}</p>
+				</a></li>
+			</ul>
+			{% endif %}
+			{% if blok.account.has_parent %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Parent Account</li>
+				<li><a href="/network?vn={{ blok.account.network_name }}&va={{ blok.account.parent_entity.username_alias }}">
+				<h3>{{ blok.account.parent_entity.username_alias }}</h3>
+				<p><strong></strong></p>
+				<p><b>Network Balance</b>: {{ blok.account.parent_entity.network_balance }}</p>
+				<p><b>Reserve Balance</b>: {{ blok.account.parent_entity.reserve_balance }}</p>
+				</a></li>
+			</ul>
+			{% endif %}
+			{% if blok.account.has_connections %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Connections</li>
+				{% for account in blok.account.connections %}
+				<li><a href="/network?vn={{ blok.account.network_name }}&va={{ account.username_alias }}">
+				<h3>{{ account.username_alias }}</h3>
+				<p><strong></strong></p>
+				<p><b>Network Balance</b>: {{ account.network_balance }}</p>
+				<p><b>Reserve Balance</b>: {{ account.reserve_balance }}</p>
+				<p><b>Connection Count</b>: {{ account.connection_count }}</p>
+				<p><b>Transfer Request</b>: {{ account.transfer_request }}</p>
+				<p><b>Sug. Transfer Active</b>: {{ account.suggested_transfer_active }}</p>
+				<p><b>Sug. Transfer Inactive</b>: {{ account.suggested_transfer_inactive }}</p>
+				</a></li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+			{% if blok.account.has_incoming_connection_requests %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Incoming Connection Requests</li>
+				{% for account in blok.account.incoming_connection_requests %}
+				<li><a href="/network?vn={{ blok.account.network_name }}&va={{ account.username_alias }}">
+				<h3>{{ account.username_alias }}</h3>
+				<p><strong></strong></p>
+				<p><b>Network Balance</b>: {{ account.network_balance }}</p>
+				<p><b>Reserve Balance</b>: {{ account.reserve_balance }}</p>
+				<p><b>Connection Count</b>: {{ account.connection_count }}</p>
+				</a></li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+			{% if blok.account.has_outgoing_connection_requests %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Outgoing Connection Requests</li>
+				{% for account in blok.account.outgoing_connection_requests %}
+				<li><a href="/network?vn={{ blok.account.network_name }}&va={{ account.username_alias }}">
+				<h3>{{ account.username_alias }}</h3>
+				<p><strong></strong></p>
+				<p><b>Network Balance</b>: {{ account.network_balance }}</p>
+				<p><b>Reserve Balance</b>: {{ account.reserve_balance }}</p>
+				<p><b>Connection Count</b>: {{ account.connection_count }}</p>
+				</a></li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+			{% if blok.account.has_child_client_accounts %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Child Client Accounts</li>
+				{% for account in blok.account.child_client_accounts %}
+				<li><a href="/network?vn={{ blok.account.network_name }}&va={{ account.username_alias }}">
+				<h3>{{ account.username_alias }}</h3>
+				<p><strong></strong></p>
+				<p><b>Network Balance</b>: {{ account.network_balance }}</p>
+				</a></li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+			{% if blok.account.has_child_joint_accounts %}
+			<ul class="myclass" data-inset="true" data-role="listview" data-divider-theme="a">
+				<li data-role="list-divider">Child Joint Accounts</li>
+				{% for account in blok.account.child_joint_accounts %}
+				<li><a href="/network?vn={{ blok.account.network_name }}&va={{ account.username_alias }}">
+				<h3>{{ account.username_alias }}</h3>
+				<p><strong></strong></p>
+				<p><b>Network Balance</b>: {{ account.network_balance }}</p>
+				</a></li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+	{% endif %}
+
+
+	{% if blok.type == "error" %}
+		{% if blok.error_code == "1001" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Command keyword(s) unrecognized.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1002" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Context not recognized.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1003" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Unauthorized command request.  You are not signed in.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1101" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Invalid username format.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1102" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Username chosen is not unique.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1103" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Only administrators can create networks.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1104" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Invalid network name format.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1105" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network name chosen is not unique.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1106" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network can't be deleted.  Only inactive
+			networks can be deleted manually.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1107" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network skintillionth conversion
+			rate must be a positive integer less than 1 quadrillion.  It's default value is 10 thousand.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1108" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Once a network has become active
+			you cannot modify the status, type, description, or skintillionth conversion rate.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1109" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Name no longer valid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1110" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network id invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1111" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cannot open another reserve account.
+			Maximum reserve accounts allowed has been reached.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1112" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cannot open another reserve account.
+			You already have a reserve account on this network.  Each user is only allowed one reserve account per network.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1113" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network name invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1114" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account name invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1115" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account specified is not current user.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1116" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account name specified
+			has no account on the named network.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1117" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Transaction type passed to reserve_modify()
+			function was not recognized.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1118" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account name invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1119" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target account name is
+			invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1120" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target account name specified
+			has no account on the network specified.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1121" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cannot not make payment to self.</p>
+		{% endif %}
+		{% if blok.error_code == "1122" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target account name is invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1123" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source metric account
+			is invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1124" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account cannot
+			connect to itself.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1125" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account is not an
+			active account or is not a reserve account.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1126" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target metric account is
+			not valid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1127" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target account is not an
+			active account or is not a reserve account.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1128" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source and target account
+			are already connected.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1129" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Connection request with target
+			from source already exists.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1130" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Targets incoming connection
+			request limit has been reached.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1131" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Sources outgoing connection
+			request limit has been reached.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1132" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source maximum connections
+			has been reached.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1133" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target maximum connections
+			has been reached.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1134" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network name is invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1135" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network name is invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1136" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account name is invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1137" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target account name is invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1138" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> No valid connection or connection
+			requests between source and target accounts.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1139" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source account name is invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1140" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Amount passed to modify reserve
+			function is invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1141" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Amount passed to modify reserve
+			function exceeds maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1142" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Invalid amount passed to make_payment().</p>
+		{% endif %}
+		{% if blok.error_code == "1143" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Payment amount exceeds maximum allowed.</p>
+		{% endif %}
+		{% if blok.error_code == "1144" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Insufficient network balance to make payment.</p>
+		{% endif %}
+		{% if blok.error_code == "1145" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Only active reserve accounts can disconnect, source is not.</p>
+		{% endif %}
+		{% if blok.error_code == "1146" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Only active reserve accounts can disconnect, target is not.</p>
+		{% endif %}
+		{% if blok.error_code == "1147" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Only active reserve accounts can disconnect, source is not.</p>
+		{% endif %}
+		{% if blok.error_code == "1148" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Only active reserve accounts can disconnect, source is not.</p>
+		{% endif %}
+		{% if blok.error_code == "1149" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Only active reserve accounts can disconnect, target is not.</p>
+		{% endif %}
+		{% if blok.error_code == "1150" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source name is not valid.</p>
+		{% endif %}
+		{% if blok.error_code == "1151" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source and target id cannot be the same.</p>
+		{% endif %}
+		{% if blok.error_code == "1152" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target name is not valid.</p>
+		{% endif %}
+		{% if blok.error_code == "1153" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Invalid amount passed to reserve transfer function.</p>
+		{% endif %}
+		{% if blok.error_code == "1154" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source and target are not connected.</p>
+		{% endif %}
+		{% if blok.error_code == "1155" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Suggested activation request has no match for target.</p>
+		{% endif %}
+		{% if blok.error_code == "1156" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Suggested activation request does not match on amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1157" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Active suggestion request must be resolved before
+			new action on an inactive suggestion.</p>
+		{% endif %}
+		{% if blok.error_code == "1158" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Active suggestion request must be resolved before
+			new action on an inactive suggestion.</p>
+		{% endif %}
+		{% if blok.error_code == "1159" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Deactivation of suggested request has no match on amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1160" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Denial of suggested request has no active match on amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1161" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> No suggested active request between source and target.</p>
+		{% endif %}
+		{% if blok.error_code == "1162" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Existing transfer requests must be completed or cancelled
+			before creating new ones.</p>
+		{% endif %}
+		{% if blok.error_code == "1163" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Existing transfer requests must be completed or cancelled
+			before creating new ones.</p>
+		{% endif %}
+		{% if blok.error_code == "1164" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cancel of suggested request does not match on amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1165" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cancel request for suggested does not have match in
+			outgoing requests for source.</p>
+		{% endif %}
+		{% if blok.error_code == "1166" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cancellation of suggested request does not match incoming amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1167" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cancel request for suggested does not have match in
+			incoming requests for source.</p>
+		{% endif %}
+		{% if blok.error_code == "1168" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> No request in active suggested incoming for target.</p>
+		{% endif %}
+		{% if blok.error_code == "1169" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Authorization amount does not match incoming request.</p>
+		{% endif %}
+		{% if blok.error_code == "1170" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target has insufficient reserves for transfer.</p>
+		{% endif %}
+		{% if blok.error_code == "1171" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> No incoming reserve transfer requests for target.</p>
+		{% endif %}
+		{% if blok.error_code == "1172" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Authorization amount does not match incoming request.</p>
+		{% endif %}
+		{% if blok.error_code == "1173" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target has insufficient reserves for transfer.</p>
+		{% endif %}
+		{% if blok.error_code == "1174" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Reserve Transfer() transaction type invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1175" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> cannot make account offer to self.</p>
+		{% endif %}
+		{% if blok.error_code == "1176" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> only active reserve accounts can offer, source is not</p>
+		{% endif %}
+		{% if blok.error_code == "1177" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source currently has existing joint offer.
+			Previous offers must be cancelled/authorized before new ones created.</p>
+		{% endif %}
+		{% if blok.error_code == "1178" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target currently has offer for joint account.
+			Previous offers must be cancelled/authorized before new ones created.</p>
+		{% endif %}
+		{% if blok.error_code == "1179" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source child accounts is currently at maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1180" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target other accounts is currently at maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1181" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> The source has no active joint offer.	</p>
+		{% endif %}
+		{% if blok.error_code == "1182" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> target id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1183" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> The source has not been offered a joint account.</p>
+		{% endif %}
+		{% if blok.error_code == "1184" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> target id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1185" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> The source has no active joint offer.</p>
+		{% endif %}
+		{% if blok.error_code == "1186" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> target id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1187" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source and target joint offers did not match.</p>
+		{% endif %}
+		{% if blok.error_code == "1188" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> source id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1189" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> cannot make account offer to self.</p>
+		{% endif %}
+		{% if blok.error_code == "1190" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> only active reserve accounts can offer, source is not</p>
+		{% endif %}
+		{% if blok.error_code == "1191" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source currently has existing client offer.
+			Previous offers must be cancelled/authorized before new ones created.</p>
+		{% endif %}
+		{% if blok.error_code == "1192" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target currently has offer for client account.
+			Previous offers must be cancelled/authorized before new ones created.</p>
+		{% endif %}
+		{% if blok.error_code == "1193" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source child accounts is currently at maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1194" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target other accounts is currently at maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1195" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> The source has no active client offer.</p>
+		{% endif %}
+		{% if blok.error_code == "1196" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> target id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1197" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> The source has not been offered a client account.</p>
+		{% endif %}
+		{% if blok.error_code == "1198" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> target id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1199" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> The source has no active client offer.</p>
+		{% endif %}
+		{% if blok.error_code == "1200" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> target id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1201" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source and target client offers did not match.</p>
+		{% endif %}
+		{% if blok.error_code == "1202" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> source id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1203" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> only active reserve accounts can create
+			clone accounts, source is not</p>
+		{% endif %}
+		{% if blok.error_code == "1204" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source other accounts is currently at maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1205" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> error transaction type not recognized</p>
+		{% endif %}
+		{% if blok.error_code == "1206" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> source id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1207" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source id is invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1208" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network balance must be
+			zero in order to close joint account.</p>
+		{% endif %}
+		{% if blok.error_code == "1209" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> parent id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1210" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network balance must be zero in
+			order to close client account. </p>
+		{% endif %}
+		{% if blok.error_code == "1211" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> parent id is not valid</p>
+		{% endif %}
+		{% if blok.error_code == "1212" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network balance must be zero in order to close clone account. </p>
+		{% endif %}
+		{% if blok.error_code == "1213" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Account still has connections.</p>
+		{% endif %}
+		{% if blok.error_code == "1214" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Account still has child accounts.</p>
+		{% endif %}
+		{% if blok.error_code == "1215" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network balance must be zero in order to close clone account.</p>
+		{% endif %}
+		{% if blok.error_code == "1216" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Transaction type not recognized. </p>
+		{% endif %}
+		{% if blok.error_code == "1217" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Source id is invalid. </p>
+		{% endif %}
+		{% if blok.error_code == "1218" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Can't retrieve from self. </p>
+		{% endif %}
+		{% if blok.error_code == "1219" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target id is invalid. </p>
+		{% endif %}
+		{% if blok.error_code == "1220" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target is not a child joint account of source. </p>
+		{% endif %}
+		{% if blok.error_code == "1221" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target is not a child joint account of source. </p>
+		{% endif %}
+		{% if blok.error_code == "1222" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Invalid amount passed. </p>
+		{% endif %}
+		{% if blok.error_code == "1223" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Retrieve amount exceeds maximum payment allowed. </p>
+		{% endif %}
+		{% if blok.error_code == "1224" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Joint account does not have enough balance for the retrieval requested. </p>
+		{% endif %}
+		{% if blok.error_code == "1225" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Current alias invalid. </p>
+		{% endif %}
+		{% if blok.error_code == "1226" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Name passed is not an alias of a metric account. </p>
+		{% endif %}
+		{% if blok.error_code == "1227" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> User id from current alias is invalid. </p>
+		{% endif %}
+		{% if blok.error_code == "1228" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> New alias chosen is not unique. </p>
+		{% endif %}
+		{% if blok.error_code == "1229" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Cannot delete alias as username already a label on this network. </p>
+		{% endif %}
+		{% if blok.error_code == "1230" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Target name invalid. </p>
+		{% endif %}
+		{% if blok.error_code == "1231" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Could not find account in user object in order
+			to set default. </p>
+		{% endif %}
+		{% if blok.error_code == "1232" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid amount passed.</p>
+		{% endif %}
+		{% if blok.error_code == "1233" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid amount passed.</p>
+		{% endif %}
+		{% if blok.error_code == "1234" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Gratuity missing percent.</p>
+		{% endif %}
+		{% if blok.error_code == "1235" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid gratuity percent passed.</p>
+		{% endif %}
+		{% if blok.error_code == "1236" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid type passed.</p>
+		{% endif %}
+		{% if blok.error_code == "1237" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Command not valid.  No ticket name specified.</p>
+		{% endif %}
+		{% if blok.error_code == "1238" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Not enough arguments for open ticket command.</p>
+		{% endif %}
+		{% if blok.error_code == "1239" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket name provided is not valid.</p>
+		{% endif %}
+		{% if blok.error_code == "1240" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Too many arguments for open ticket command.</p>
+		{% endif %}
+		{% if blok.error_code == "1241" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> User name provided is not valid.</p>
+		{% endif %}
+		{% if blok.error_code == "1242" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Amount provided is not valid.</p>
+		{% endif %}
+		{% if blok.error_code == "1243" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket open() command parsing error on 3rd token. Must be valid username or amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1244" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket open() command parsing error on 3rd token. Must be valid username.</p>
+		{% endif %}
+		{% if blok.error_code == "1245" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket open() command parsing error on 4th token. Must be valid amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1246" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Open tickets already at maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1247" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket name already in use.</p>
+		{% endif %}
+		{% if blok.error_code == "1248" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Target tag count already at maximum.</p>
+		{% endif %}
+		{% if blok.error_code == "1249" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Amount provided is not valid.</p>
+		{% endif %}
+		{% if blok.error_code == "1250" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid ticket command. Failed to parse.</p>
+		{% endif %}
+		{% if blok.error_code == "1251" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket name not in source index.</p>
+		{% endif %}
+		{% if blok.error_code == "1252" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Target already has too many ticket tags.</p>
+		{% endif %}
+		{% if blok.error_code == "1253" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket is not currently tagged to a user.  Nothing to remove.</p>
+		{% endif %}
+		{% if blok.error_code == "1254" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket already tagged to a user.</p>
+		{% endif %}
+		{% if blok.error_code == "1255" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Source ticket not in tagged user ticket index.</p>
+		{% endif %}
+		{% if blok.error_code == "1256" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket name not in owner index.</p>
+		{% endif %}
+		{% if blok.error_code == "1257" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket name not in owner index.</p>
+		{% endif %}
+		{% if blok.error_code == "1258" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> DATAERROR: Source ticket not in tagged user ticket index.</p>
+		{% endif %}
+		{% if blok.error_code == "1259" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid ticket command. Failed to parse.</p>
+		{% endif %}
+		{% if blok.error_code == "1260" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Payment amount must match ticket amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1261" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Visitor metric account failed to load.</p>
+		{% endif %}
+		{% if blok.error_code == "1262" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Source and Target are the same.  Can't pay self.</p>
+		{% endif %}
+		{% if blok.error_code == "1263" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Owner metric account failed to load.</p>
+		{% endif %}
+		{% if blok.error_code == "1264" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Cannot have negative gratuity amount.</p>
+		{% endif %}
+		{% if blok.error_code == "1265" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Cannot have negative gratuity percent.</p>
+		{% endif %}
+		{% if blok.error_code == "1266" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Cannot have gratuity percent greater than 100.</p>
+		{% endif %}
+		{% if blok.error_code == "1267" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Payment amount exceeds maximum allowed.</p>
+		{% endif %}
+		{% if blok.error_code == "1268" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket pay fail. Visitor does not have sufficient balance to pay.</p>
+		{% endif %}
+		{% if blok.error_code == "1269" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't load user.</p>
+		{% endif %}
+		{% if blok.error_code == "1270" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid user modification type.</p>
+		{% endif %}
+		{% if blok.error_code == "1271" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid gravatar type value for user modification.</p>
+		{% endif %}
+		{% if blok.error_code == "1272" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> User modification for location requires 2 values (lat/long).</p>
+		{% endif %}
+		{% if blok.error_code == "1273" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid lat/long values for user modification.</p>
+		{% endif %}
+		{% if blok.error_code == "1274" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Latitude out of range.  Must be between 90 and -90.</p>
+		{% endif %}
+		{% if blok.error_code == "1275" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Longitude out of range.  Must be between 180 and -180.</p>
+		{% endif %}
+		{% if blok.error_code == "1276" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't load system setttings.</p>
+		{% endif %}
+		{% if blok.error_code == "1277" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> System settings variable name invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1278" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Command keyword(s) unrecognized.</p>
+		{% endif %}
+		{% if blok.error_code == "1279" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Target name invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1280" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid account id.</p>
+		{% endif %}
+		{% if blok.error_code == "1281" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Associated account/user entities back.</p>
+		{% endif %}
+		{% if blok.error_code == "1282" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid account type.</p>
+		{% endif %}
+		{% if blok.error_code == "1283" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Account type not recognized.</p>
+		{% endif %}
+		{% if blok.error_code == "1284" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Bad transaction type.</p>
+		{% endif %}
+		{% if blok.error_code == "1285" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid account name.</p>
+		{% endif %}
+		{% if blok.error_code == "1286" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Account user doesn't match logged in user.</p>
+		{% endif %}
+		{% if blok.error_code == "1287" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Account name does not belong to network referenced.</p>
+		{% endif %}
+		{% if blok.error_code == "1288" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Account name does not belong to user.</p>
+		{% endif %}
+		{% if blok.error_code == "1289" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Could not load metric account.</p>
+		{% endif %}
+		{% if blok.error_code == "1290" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ledger page out of range.</p>
+		{% endif %}
+		{% if blok.error_code == "1291" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Subcommand for modify command not recognized.  Must be 'add', 'subtract', 'create', or 'destroy'.</p>
+		{% endif %}
+		{% if blok.error_code == "1292" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> No account found for user on this network.</p>
+		{% endif %}
+		{% if blok.error_code == "1293" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Must be viewing your own reserve account to make reserve modifications.</p>
+		{% endif %}
+		{% if blok.error_code == "1294" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Subcommand for suggested/transfer command not recognized.  Must be 'add', 'subtract', 'create', or 'destroy'.</p>
+		{% endif %}
+		{% if blok.error_code == "1295" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> User name is invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1296" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Can't load user entity.</p>
+		{% endif %}
+		{% if blok.error_code == "1297" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Account name is invalid.</p>
+		{% endif %}
+		{% if blok.error_code == "1298" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Can't load user entity.</p>
+		{% endif %}
+		{% if blok.error_code == "1299" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> For alias change, target must be current user.</p>
+		{% endif %}
+		{% if blok.error_code == "1300" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid account name.</p>
+		{% endif %}
+		{% if blok.error_code == "1301" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't load user object.</p>
+		{% endif %}
+		{% if blok.error_code == "1302" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Account name does not match user for this network.</p>
+		{% endif %}
+		{% if blok.error_code == "1303" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Could not load metric account	.</p>
+		{% endif %}
+		{% if blok.error_code == "1304" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't graph profile object.</p>
+		{% endif %}
+		{% if blok.error_code == "1305" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid account name.</p>
+		{% endif %}
+		{% if blok.error_code == "1306" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't load ticket owner user object.</p>
+		{% endif %}
+		{% if blok.error_code == "1307" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket owner name does not match user for this network.</p>
+		{% endif %}
+		{% if blok.error_code == "1308" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Could not load metric account.</p>
+		{% endif %}
+		{% if blok.error_code == "1309" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Invalid page passed.</p>
+		{% endif %}
+		{% if blok.error_code == "1310" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Ticket label doesn't exist for owner account.</p>
+		{% endif %}
+		{% if blok.error_code == "1311" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't load tagged user object.</p>
+		{% endif %}
+		{% if blok.error_code == "1312" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't render tagged user account name.</p>
+		{% endif %}
+		{% if blok.error_code == "1313" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Bad transaction type.</p>
+		{% endif %}
+		{% if blok.error_code == "1314" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Bad transaction type.</p>
+		{% endif %}
+		{% if blok.error_code == "1315" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't load parent metric account.</p>
+		{% endif %}
+		{% if blok.error_code == "1316" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Couldn't load parent user object.</p>
+		{% endif %}
+		{% if blok.error_code == "1317" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> TREE ERROR Can't make payments between disconnected accounts.</p>
+		{% endif %}
+		{% if blok.error_code == "1318" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> TREE ERROR Can't make payments between disconnected accounts.</p>
+		{% endif %}
+		{% if blok.error_code == "1319" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> No client offer exists.</p>
+		{% endif %}
+		{% if blok.error_code == "1320" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> No joint offer exists.</p>
+		{% endif %}
+		{% if blok.error_code == "1321" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> No client offer exists.</p>
+		{% endif %}
+		{% if blok.error_code == "1322" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> No joint offer exists.</p>
+		{% endif %}
+		{% if blok.error_code == "1323" %}
+			<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> User not registered.</p>
+		{% endif %}
+		{% if blok.error_code == "1324" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Network decimal places
+			entered must be between 0 and 10 only.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1325" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Account name invalid.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1326" %}
+			<p class="error ui-body ui-body-e"><font color="red"><strong>ERROR:</strong></font> Account decimal places
+			entered must be between 0 and 10 only.<br/>
+			<a href="{{ blok.last_view_link }}">{{ blok.last_view_link_text }}</a></p>
+		{% endif %}
+		{% if blok.error_code == "1327" %}
+					<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> Can only join active networks.</p>
+		{% endif %}
+		{% if blok.error_code == "9999" %}
+					<p class="error ui-body ui-body-e"><font color="green"><strong>ERROR:</strong></font> STUB.</p>
+		{% endif %}
+
+	{% endif %}
+
+
+
+	{% if blok.type == "confirm" %}
+		{% if blok.confirm_code == "6001" %}
+			<p class="confirm ui-body ui-body-e"><font color="red"><strong>CONFIRM:</strong></font> Please type "confirm" in the
+			command field to indicate you wish to change your current username: <b>{{ master.request.GET.xold_username }}</b>
+			to new username: <b>{{ master.request.GET.xnew_username }}</b></p>
+		{% endif %}
+		{% if blok.confirm_code == "6002" %}
+			<p class="confirm ui-body ui-body-e"><font color="red"><strong>CONFIRM:</strong></font> Please type "confirm" in the
+			command field to indicate you wish to activate network: <b>{{ master.request.GET.xnetwork_name }}</b></p>
+		{% endif %}
+		{% if blok.confirm_code == "6003" %}
+			<p class="confirm ui-body ui-body-e"><font color="red"><strong>CONFIRM:</strong></font> Please type "confirm" in the
+			command field to indicate you wish to change the network name from: <b>{{ master.request.GET.xold_network_name }}</b> to:
+			<b>{{ master.request.GET.xnew_network_name }}</b>.</p>
+		{% endif %}
+		{% if blok.confirm_code == "6004" %}
+			<p class="confirm ui-body ui-body-e"><font color="red"><strong>CONFIRM:</strong></font> Please type "confirm" in the
+			command field to indicate you wish to open a reserve accounton network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+	{% endif %}
+
+
+
+	{% if blok.type == "success" %}
+		{% if blok.success_code == "7001" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			changed your username to <b>{{ master.request.GET.xnew_username }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7002" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			created a new network: <b>{{ master.request.GET.xnew_network_name }}</b>.  It's still inactive however.  Change whatever
+			settings you need to, and then issue an 'activate' command.</p>
+		{% endif %}
+		{% if blok.success_code == "7003" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			deleted network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7004" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			activated network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7005" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			set the network type to "LIVE" for network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7006" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			set the network type to "TEST" for network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7007" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			changed the skintillionth conversion to {{ master.request.GET.xskintillionths }} for network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7008" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			changed the network name from: <b>{{ master.request.GET.xold_network_name }}</b> to: <b>{{ master.request.GET.xnew_network_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7010" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			requested a connection on the <b>{{ master.request.GET.vn }}</b> reserve network with user:
+			<b>{{ master.request.GET.va }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7009" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			connected to user: <b>{{ master.request.GET.va }}</b> on the <b>{{ master.request.GET.vn }}</b>
+			reserve network.</p>
+		{% endif %}
+		{% if blok.success_code == "7011" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			opened a reserve account on network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7012" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have denied the connection
+			request by user: <b>{{ master.request.GET.xtargetname }}</b> on network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7013" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have withdrawn your
+			connection request to user: <b>{{ master.request.GET.xtargetname }}</b> on network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7014" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have cancelled the reserve
+			connection between yourself and user: <b>{{ master.request.GET.xtargetname }}</b> on network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7015" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			increased your accounts reserve amount.</p>
+		{% endif %}
+		{% if blok.success_code == "7016" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			decreased your accounts reserve amount.</p>
+		{% endif %}
+		{% if blok.success_code == "7017" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			increased your accounts reserve amount via override.</p>
+		{% endif %}
+		{% if blok.success_code == "7018" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			decreased your accounts reserve amount via override.</p>
+		{% endif %}
+		{% if blok.success_code == "7019" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Payment successful.</p>
+		{% endif %}
+		{% if blok.success_code == "7020" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Suggested reserve transfer request stored.</p>
+		{% endif %}
+		{% if blok.success_code == "7021" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Suggested reserve transfer request activated.</p>
+		{% endif %}
+		{% if blok.success_code == "7022" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Suggested reserve transfer request deactivated.</p>
+		{% endif %}
+		{% if blok.success_code == "7023" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Suggested reserve transfer request denied.</p>
+		{% endif %}
+		{% if blok.success_code == "7024" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> User reserve transfer requested.</p>
+		{% endif %}
+		{% if blok.success_code == "7025" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> User reserve transfer cancelled.</p>
+		{% endif %}
+		{% if blok.success_code == "7026" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> User reserve transfer denied.</p>
+		{% endif %}
+		{% if blok.success_code == "7027" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Suggested reserve transfer request authorized.</p>
+		{% endif %}
+		{% if blok.success_code == "7028" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> User reserve transfer authorized.</p>
+		{% endif %}
+		{% if blok.success_code == "7029" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Joint account offer successfully created.</p>
+		{% endif %}
+		{% if blok.success_code == "7030" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Joint account offer successfully cancelled.</p>
+		{% endif %}
+		{% if blok.success_code == "7031" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Joint account offer successfully denied.</p>
+		{% endif %}
+		{% if blok.success_code == "7032" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Joint account successfully created.</p>
+		{% endif %}
+		{% if blok.success_code == "7033" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Client account offer successfully created.</p>
+		{% endif %}
+		{% if blok.success_code == "7034" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Client account offer successfully cancelled.</p>
+		{% endif %}
+		{% if blok.success_code == "7035" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Client account offer successfully denied.</p>
+		{% endif %}
+		{% if blok.success_code == "7036" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Client account successfully created.</p>
+		{% endif %}
+		{% if blok.success_code == "7037" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Clone account successfully created.</p>
+		{% endif %}
+		{% if blok.success_code == "7038" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully closed joint account.</p>
+		{% endif %}
+		{% if blok.success_code == "7039" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully closed client account.</p>
+		{% endif %}
+		{% if blok.success_code == "7040" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully closed clone account.</p>
+		{% endif %}
+		{% if blok.success_code == "7041" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully closed reserve account.</p>
+		{% endif %}
+		{% if blok.success_code == "7042" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Joint account retrieval successful.</p>
+		{% endif %}
+		{% if blok.success_code == "7043" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully changed alias.</p>
+		{% endif %}
+		{% if blok.success_code == "7044" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully deleted alias. Account now uses username.</p>
+		{% endif %}
+		{% if blok.success_code == "7045" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			changed the network description for network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+		{% if blok.success_code == "7046" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			set your default account.</p>
+		{% endif %}
+		{% if blok.success_code == "7047" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket successfully opened.</p>
+		{% endif %}
+		{% if blok.success_code == "7048" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket successfully opened.</p>
+		{% endif %}
+		{% if blok.success_code == "7049" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket successfully closed.</p>
+		{% endif %}
+		{% if blok.success_code == "7050" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket amount successfully changed.</p>
+		{% endif %}
+		{% if blok.success_code == "7051" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket tag successfully removed.</p>
+		{% endif %}
+		{% if blok.success_code == "7052" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket tag successfully added.</p>
+		{% endif %}
+		{% if blok.success_code == "7053" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket tag successfully removed.</p>
+		{% endif %}
+		{% if blok.success_code == "7054" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Ticket payment succeeded.</p>
+		{% endif %}
+		{% if blok.success_code == "7055" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully modified user.</p>
+		{% endif %}
+		{% if blok.success_code == "7056" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully modified system settings.</p>
+		{% endif %}
+		{% if blok.success_code == "7057" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Successfully modified system settings.</p>
+		{% endif %}
+		{% if blok.success_code == "7058" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> Decimal places successfully updated.</p>
+		{% endif %}
+		{% if blok.success_code == "7059" %}
+			<p class="success ui-body ui-body-b"><font color="green"><strong>SUCCESS:</strong></font> You have successfully
+			changed the decimal places to {{ master.request.GET.xdecimals }} for network: <b>{{ master.request.GET.xnetwork_name }}</b>.</p>
+		{% endif %}
+	{% endif %}
+
+	{% if blok.type == "documentation_menu" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h4>Documentation</h4>
+			<p><a href="/documentation?p=home">Doc Home</a>
+			<br/><a href="/documentation?p=command_reference">Command Reference</a>
+			<br/><a href="/documentation?p=overview">Overview</a>
+			<br/><a href="/documentation?p=general_use">General Use</a>
+			<br/><a href="/documentation?p=administration">Setup/Administration</a>
+			<br/><a href="/documentation?p=graph">Understanding the Graph</a>
+			<br/><a href="/documentation?p=economics">Economics</a></p>
+			<hr/>
+		</div>
+	{% endif %}
+
+	{% if blok.type == "documentation_home" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>Doc Home</h3>
+			<hr/>
+			<p>Click a link above for more info.</p>
+		</div>
+	{% endif %}
+
+	{% if blok.type == "documentation_overview" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>Overview</h3>
+			<hr/>
+			<p>It's generic, simplified, person-to-person banking software for the most part.</p>
+		</div>
+	{% endif %}
+
+
+	{% if blok.type == "documentation_general_use" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>General Use</h3>
+			<hr/>
+			<p>Create a reserve account.  Connect to people.  Monetize value.  Obey the reserve evening suggestions.  Don't steal.  Monitor and adapt to abuse.</p>
+		</div>
+	{% endif %}
+
+	{% if blok.type == "documentation_administration" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>Setup and Administration</h3>
+			<hr/>
+			<p>In Cloud console:<br/>
+			1. Create indexes.<br/>
+			2. Create Cron Jobs<br/>
+			3. Create a google maps api key.<br/>
+			<br/>
+			Then, in the actual application command field type "settings google_maps_api_key YOUR_API_KEY" where "YOUR_API_KEY" is replaced with your actual api key.</p>
+			<p>That's it really.  As far as administration in the actual application, only admins are allowed to create networks and change settings.  Other than that,
+			everyone is pretty much equal.</p>
+		</div>
+	{% endif %}
+
+
+	{% if blok.type == "documentation_graph" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>Understanding the Graph</h3>
+			<hr/>
+			<p>It's called "metric reserve" for a very specific reason.  "Metric" simply being a greek word rooted in "measure" and "reserve" because each
+			"network"-which can be thought of as a currency-is made up of "reserve" accounts.  Much like a traditional bank, someone is holding your physical
+			money but you are allowed to spend it's value in the system.  Unlike a traditional bank, metric reserve is a 100% reserve system.  Users are not
+			permitted to loan out or otherwise "tie up" reserve funds, as they must be ready at any time to transfer reserves to another connected account.
+			Each user can have one reserve account per network.  Each person ideally holds the same amount of reserves though they may all-and likely
+			do-have separate balances.</p>
+			<p>Users only exchange reserves with other reserve accounts they are connected to.  And users only are allowed to make payments with users who they
+			are connected with-even if it's indirectly-on the same network.  This network of connections is called a "graph" or "social graph" and corresponds
+			to a Facebook-like "friend network".  If there exists some path of connections between you and another user on the same network metric reserve
+			considers those users to be on the same "tree".  One of the two primary algorithms it runs is to determine which users are on the same tree.</p>
+			<p>Currently, in this implementation, metric reserve will prevent users who are not on the same tree from making payments even though they may
+			both have positive balances on the same network.</p>
+			<p>The other primary algorithm metric reserve runs is related to answering the question, "How do we know how to spread out the reserves evenly
+			when people are connecting and disconnecting randomly?"  That algorithm is a little less straightforward but it can be shown logically that the
+			algorithm metric reserve uses, will eventually bring everyone to equilibrium.</p>
+			<p>This problem of distributing reserves actually is closely related to another problem in digital currencies known as "payment routing".  It
+			is relevant to systems like ripplepay.com and bitcoin lightning network.  It's been understood for some time that facilitating payments by
+			routing through a social graph where shared credit or value exists is possible.  The issue becomes when pondering this that each "routing" act
+			changes the shape of the graph and requires further processing.  Hence, the system will gravitate to where "hub" nodes are needed "clear" a
+			payment.  Metric reserve solves this problem the other way.  To avoid hubs and central players everyone shares the risk, but also gets the benefit
+			of more elastic monetization of value.  It's easy to setup and easy to tear down.  Though, admittedly it takes a while to see this economically.
+			I struggled with it for a good 10 years.</p>
+			<p>One important point that needs to be clarified is this:  This is a completely voluntary system.  The algorithms simply provide information.  They
+			do not transfer money or make payments on your behalf.  They simply inform the network of participants HOW to act.  It's still up to each individual
+			user to follow the protocol.  Your connections are not obligated to connect, transfer reserves, or make payments to you just like you aren't
+			towards them.  Metric reserve is nothing more than a protocol and application for operating community-based person-to-person banking.  It puts
+			people and their connections in the drivers seat.  It doesn't rely on a specific currency, or a centralized trusted entity.  Anyone can operate
+			it independently from others or as part of a network.  It works the same wherever it's used.</p>
+		</div>
+	{% endif %}
+
+
+	{% if blok.type == "documentation_economics" %}
+		<div class="text_bubble ui-body ui-body-c">
+			<h3>Economics</h3>
+			<hr/>
+			<p>The entire "novel" thing about metric reserve is what it aims at economically.  The "way you use" metric reserve is designed with many things in mind.
+			How much liquidity does a monetary system need?  How do you prove whether someone in a system is not double spending?  How do you avoid the dangers of
+			hoarding and deflation and also of centralization and inflation?  Is there a point to having multiple currencies?</p>
+			<p>More blah, blah, later.</p>
+		</div>
+	{% endif %}
+
+
+	{% if blok.type == "documentation_command_reference" %}
+		<div class="command_reference ui-body ui-body-c">
+			<h3>Command Reference:</h3>
+			<hr/>
+			<p>CONTEXT: ([Any]) AS: ([User])</p>
+			<p><span class="command_reference">l</span>
+			<br/>Switch from text field to text area.</p>
+
+			<p><span class="command_reference">menu</span>
+			<br/>Navigate browser to menu page.</p>
+			<p><span class="command_reference">network</span>
+			<br/>Navigate to all networks summary page.</p>
+			<p><span class="command_reference">network [name]</span>
+			<br/>Navigate to a specific network page.</p>
+			<p><span class="command_reference">username change [new name]</span>
+			<br/>change your username</p>
+			<p><span class="command_reference">account [name]</span>
+			<br/>navigate to a specific metric account</p>
+			<p><span class="command_reference">user [name]</span>
+			<br/>navigate to a specific user profile</p>
+			<p><span class="command_reference">gurl [url or email address]</span>
+			<br/>change the url/email associated with gravatar hash</p>
+			<p><span class="command_reference">gtype [value]</span>
+			<br/>change gravatar-based avatar type values allowed: "identicon" (default) "monsterid" "wavatar" "retro" "gravatar" "mm"</p>
+			<p><span class="command_reference">bio [description]</span>
+			<br/>changes your "bio" description on your profile page</p>
+			<p><span class="command_reference">location [latitude as decimal] [longitude as decimal]</span>
+			<br/>changes geo coordinates associated with your user account</p>
+			<p><span class="command_reference">joint offer cancel</span>
+			<br/>cancel your offer for sponsoring a joint account</p>
+			<p><span class="command_reference">client offer cancel</span>
+			<br/>cancel your offer for sponsoring a client account</p>
+			<p><span class="command_reference">joint offer deny</span>
+			<br/>deny a sponsors offer for a joint account</p>
+			<p><span class="command_reference">client offer deny</span>
+			<br/>deny a sponsors offer for a client account</p>
+
+			<hr/>
+			<p>CONTEXT: ([Any]) AS: ([Admin])</p>
+
+			<p><span class="command_reference">settings [key] [value]</span>
+			<br/>change a system setting</p>
+			<p><span class="command_reference">network add [name]</span>
+			<br/>add a new metric reserve network</p>
+
+			<hr/>
+			<p>CONTEXT: (messages) AS: ([User])</p>
+
+			<p><span class="command_reference">message [message text]</span>
+			<br/>posts a message to a users public message channel</p>
+
+			<hr/>
+			<p>CONTEXT: (specific network) AS: ([User])</p>
+
+			<p><span class="command_reference">reserve open</span>
+			<br/>opens a reserve account for the user on this network</p>
+
+			<hr/>
+			<p>CONTEXT: (specific network) AS: ([Admin])</p>
+
+			<p><span class="command_reference">network delete</span>
+			<br/>deletes an inactive network</p>
+			<p><span class="command_reference">network type live</span>
+			<br/>sets a network type to live (default)</p>
+			<p><span class="command_reference">network type test</span>
+			<br/>sets a network type to test</p>
+			<p><span class="command_reference">network describe [description]</span>
+			<br/>saves a description of the network</p>
+			<p><span class="command_reference">network name [new name]</span>
+			<br/>changes the name of a network</p>
+
+			<hr/>
+			<p>CONTEXT: (your reserve account) AS: ([User])</p>
+
+			<p><span class="command_reference">modify add [amount]</span>
+			<br/>add reserves increasing your reserve and network balance</p>
+			<p><span class="command_reference">modify subtract [amount]</span>
+			<br/>decrease reserves decreasing your reserve and network balance</p>
+			<p><span class="command_reference">modify create [amount]</span>
+			<br/>add reserves but increase reserve balance only</p>
+			<p><span class="command_reference">modify destroy [amount]</span>
+			<br/>subtract reserves but decrease reserve balance only</p>
+			<p><span class="command_reference">clone open</span>
+			<br/>open a clone account</p>
+			<p><span class="command_reference">joint offer [name]</span>
+			<br/>offer to sponsor another users joint account</p>
+			<p><span class="command_reference">client offer [name]</span>
+			<br/>offer to sponsor another users client account</p>
+
+			<hr/>
+			<p>CONTEXT: (others reserve account) AS: ([User])</p>
+
+			<p><span class="command_reference">connect</span>
+			<br/>create connection request to other user or authorize other users connection request to you</p>
+			<p><span class="command_reference">disconnect</span>
+			<br/>disconnect from other user or cancels any connection request from either party</p>
+			<p><span class="command_reference">transfer request [amount]</span>
+			<br/>request user defined transfer amount with connection</p>
+			<p><span class="command_reference">transfer cancel [amount]</span>
+			<br/>cancel user defined transfer request with connection</p>
+			<p><span class="command_reference">transfer authorize [amount]</span>
+			<br/>finalize user defined transfer request from connection</p>
+			<p><span class="command_reference">transfer deny [amount]</span>
+			<br/>deny user defined transfer request from connection</p>
+			<p><span class="command_reference">suggested request [amount]</span>
+			<br/>request system defined transfer amount with connection</p>
+			<p><span class="command_reference">suggested cancel [amount]</span>
+			<br/>cancel system defined transfer request with connection</p>
+			<p><span class="command_reference">suggested deny [amount]</span>
+			<br/>deny system defined transfer request from connection</p>
+			<p><span class="command_reference">suggested authorize [amount]</span>
+			<br/>finalize system defined transfer request from connection</p>
+			<p><span class="command_reference">joint authorize</span>
+			<br/>accept sponsor offer from reserve account and create new joint account</p>
+			<p><span class="command_reference">client authorize</span>
+			<br/>accept sponsor offer from reserve account and create new client account</p>
+
+
+			<hr/>
+			<p>CONTEXT: (others joint account) AS: ([User])</p>
+
+			<p><span class="command_reference">joint retrieve [amount]</span>
+			<br/>take funds from a sponsored joint account of yours</p>
+
+			<hr>
+			<p>CONTEXT: (your any type account) AS: ([User])</p>
+
+			<p><span class="command_reference">[account type] close</span>
+			<br/>close an account where type is one of: "reserve" "client" "joint" "clone"</p>
+			<p><span class="command_reference">alias change [new name]</span>
+			<br/>change alias for account name to new name</p>
+			<p><span class="command_reference">alias delete</span>
+			<br/>delete alias account name if username is available</p>
+			<p><span class="command_reference">default</span>
+			<br/>make this account your default pay account on this network</p>
+			<p><span class="command_reference">decimals [number of decimal places]</span>
+			<br/>Change the number of decimal places shown for this account.</p>
+
+			<hr/>
+			<p>CONTEXT: (others any type account) AS: ([User])</p>
+
+			<p><span class="command_reference">pay [amount]</span>
+			<br/>make a payment to another account</p>
+
+			<hr>
+			<p>CONTEXT: (visiting single ticket) AS: ([User])</p>
+
+			<p><span class="command_reference">remove</span>
+			<br/>remove your accounts attachment (tag) to this ticket</p>
+			<p><span class="command_reference">pay [amount]</span>
+			<br/>or: <span class="command_reference">pay [amount] [gratuity amount]</span>
+			<br/>or: <span class="command_reference">pay [amount] [gratuity percent]</span>
+			<br/>pay a ticket. A second amount can be added as a tip	or gratuity.
+			Percents need to end in % and must be between 0 and 100.  If a percent
+			is not specified it	is assumed to be a regular amount and will be added
+			to the total.  Paying a ticket removes any tag for the paying account.</p>
+
+			<hr/>
+			<p>CONTEXT: (visiting all tickets) AS: ([User])</p>
+
+			<p><span class="command_reference">ticket [name]</span>
+			<br/>go to a specific ticket</p>
+
+			<hr/>
+			<p>CONTEXT: (owner of single ticket) AS: ([User])</p>
+
+			<p><span class="command_reference">close</span>
+			<br/>close this ticket</p>
+			<p><span class="command_reference">attach [user]</span>
+			<br/>associate a specific user with this ticket</p>
+			<p><span class="command_reference">remove</span>
+			<br/>removes any associated user from this ticket</p>
+			<p><span class="command_reference">amount [amount]</span>
+			<br/>directly assigns ticket amount value overwriting previous (blanking memo)</p>
+			<p><span class="command_reference">amount [amount] m <memo></span>
+			<br/>directly assigns ticket amount and memo values overwriting previous</p>
+
+			<hr/>
+			<p>CONTEXT: (owner all tickets) AS: ([User])</p>
+
+			<p><span class="command_reference">open [name]</span>
+			<br/>or: <span class="command_reference">open [name] [user]</span>
+			<br/>or: <span class="command_reference">open [name] [amount]</span>
+			<br/>or: <span class="command_reference">open [name] [amount] m [memo]</span>
+			<br/>or: <span class="command_reference">open [name] [amount] [user]</span>
+			<br/>or: <span class="command_reference">open [name] [amount] [user] m [memo]</span>
+			<br/>all valid methods for creating a ticket. Specifying a user tags that user. Name is only field required.</p>
+			<p><span class="command_reference">close [name]</span>
+			<br/>close a ticket by name</p>
+			<p><span class="command_reference">remove [name]</span>
+			<br/>remove any current attached/tagged user from this ticket</p>
+		</div>
+	{% endif %}
+
+{% endfor %}
